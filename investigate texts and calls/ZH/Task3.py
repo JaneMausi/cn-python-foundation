@@ -3,6 +3,7 @@
 你将在以后的课程中了解更多有关读取文件的知识。
 """
 import csv
+import re
 
 with open('texts.csv', 'r') as f:
     reader = csv.reader(f)
@@ -29,7 +30,28 @@ with open('calls.csv', 'r') as f:
 "The numbers called by people in Bangalore have codes:"
  <list of codes>
 代号不能重复，每行打印一条，按字典顺序排序后输出。
+"""
+codes = []
+for item in calls:
+    if re.match(r'^\(080\)[0-9]{8}', item[0]) is None:
+        continue
+    # match mobile
+    if re.match(r'^(7[0-9]{4} [0-9]{5}|8[0-9]{4} [0-9]{5}|9[0-9]{4} [0-9]{5})', item[1]) is not None:
+        codes.append(item[1][:4])
+    # match telephone
+    if re.match(r'^(\(0[0-9]{0,11}\)[0-9]{0,11})', item[1]) is not None:
+        match = re.match(r'^(\(0[0-9]{0,11}\))', item[1])
+        if match.re.groups > 0:
+            codes.append(match.group(0))
+    # match promoter
+    if re.match(r'^140[0-9]{7}', item[1]) is not None:
+        codes.append('140')
 
+print("The numbers called by people in Bangalore have codes:")
+for item in sorted(set(codes)):
+    print(item)
+
+"""
 第二部分: 由班加罗尔固话打往班加罗尔的电话所占比例是多少？
 换句话说，所有由（080）开头的号码拨出的通话中，
 打往由（080）开头的号码所占的比例是多少？
@@ -39,3 +61,11 @@ with open('calls.csv', 'r') as f:
 to other fixed lines in Bangalore."
 注意：百分比应包含2位小数。
 """
+count = 0
+for item in codes:
+    if item == '(080)':
+        count += 1
+
+percentage = (float(count)/float(len(codes))) * 100
+print("{} percent of calls from fixed lines in Bangalore are calls "
+      "to other fixed lines in Bangalore.".format(format(percentage, '.2f')))

@@ -18,11 +18,25 @@ with open('calls.csv', 'r') as f:
 找出所有可能的电话推销员:
 这样的电话总是向其他人拨出电话，
 但从来不发短信、接收短信或是收到来电
-
-
 请输出如下内容
 "These numbers could be telemarketers: "
 <list of numbers>
 电话号码不能重复，每行打印一条，按字典顺序排序后输出。
 """
+# only exists in incoming numbers
+# never sends out texts, receives texts
+# never answering the call
+prom_numbers = set(list(zip(*calls))[0])
+for item in calls:
+    if item[1] in prom_numbers:
+        prom_numbers.remove(item[1])
 
+for item in texts:
+    if item[0] in prom_numbers:
+        prom_numbers.remove(item[0])
+    if item[1] in prom_numbers:
+        prom_numbers.remove(item[1])
+
+print("These numbers could be telemarketers: ")
+for item in sorted(prom_numbers):
+    print(item)
