@@ -27,6 +27,10 @@ tmp = list(zip(*calls))
 calls_number_sta = set(tmp[0])
 for item in set(tmp[1]):
     calls_number_sta.add(item)
-sum_of_numbers = len(texts_number_sta) + len(calls_number_sta)
+# combine calls_number_sta and texts_number_sta
+for item in texts_number_sta:
+    calls_number_sta.add(item)
+
+sum_of_numbers = len(calls_number_sta)
 print("There are {} different "
       "telephone numbers in the records.".format(sum_of_numbers))

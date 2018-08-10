@@ -25,12 +25,12 @@ September 2016.".
 call_dict = {}
 for item in calls:
     if item[0] not in call_dict:
-        call_dict[item[0]] = 0
+        call_dict[item[0]] = int(item[3])
     else:
         call_dict[item[0]] += int(item[3])
 
     if item[1] not in call_dict:
-        call_dict[item[1]] = 0
+        call_dict[item[1]] = int(item[3])
     else:
         call_dict[item[1]] += int(item[3])
 
