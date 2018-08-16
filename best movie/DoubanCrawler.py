@@ -59,7 +59,7 @@ if __name__ == "__main__":
             else:
                 movie_dict[item_category].extend(getMovies(item_category, item_location))
     # create movies.csv
-    with open('movies.csv', 'w', newline='') as f:
+    with open('movies.csv', 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f, delimiter='&')
         for key in movie_dict:
             for movie in movie_dict[key]:
