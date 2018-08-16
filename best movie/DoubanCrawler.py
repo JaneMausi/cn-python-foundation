@@ -2,13 +2,6 @@ from expanddouban import getHtml
 from bs4 import BeautifulSoup
 import csv
 
-category_list = ["剧情", "喜剧", "动作", "爱情", "科幻", "悬疑", "惊悚",
-                 "恐怖", "犯罪", "同性", "音乐", "歌舞", "传记", "历史",
-                 "战争", "西部", "奇幻", "冒险", "灾难", "武侠", "情色"]
-location_list = ["中国大陆", "美国", "香港", "台湾", "日本", "韩国", "英国",
-                 "法国", "德国", "意大利", "西班牙", "印度", "泰国", "俄罗斯",
-                 "伊朗", "加拿大", "澳大利亚", "爱尔兰", "瑞典", "巴西", "丹麦"]
-
 
 class Movie:
     def __init__(self, info):
@@ -25,11 +18,14 @@ class Movie:
 
 
 # get movie url selected by category and location
-def getMovieUrl(category, location):
+def getMovieUrl(category=None, location=None):
     url_body = "https://movie.douban.com/tag/#/"
-    url_tags = ','.join(["电影", item_category, item_location])
-    url_attr = '&'.join(["sort=S", "range=9,10", "tags={}".format(url_tags)])
-    movie_url = url_body + "?" + url_attr
+    if category is not None and location is not None:
+        url_tags = ','.join(["电影", item_category, item_location])
+        url_attr = '&'.join(["sort=S", "range=9,10", "tags={}".format(url_tags)])
+        movie_url = url_body + "?" + url_attr
+    else:
+        movie_url = url_body + "?" + '&'.join(["sort=S", "range=9,10", "tags=电影"])
     return movie_url
 
 
@@ -49,7 +45,19 @@ def getMovies(category, location):
     return movies
 
 
+def get_location_tags():
+    url = getMovieUrl()
+    html = getHtml(url)
+    soup = BeautifulSoup(html, 'html.parser')
+    tags = soup.find(id='wrapper').find(class_='tags').find_all(class_='category')[2].find_all(class_='tag')
+    categories = []
+    for item in tags[1:]:
+        categories.append(item.text)
+    return categories
+
+
 if __name__ == "__main__":
+    location_list = get_location_tags()
     # get movie list
     movie_dict = {}
     for item_category in ["剧情", "喜剧", "奇幻"]:
@@ -104,5 +112,5 @@ if __name__ == "__main__":
             output = output + \
                      "  {} {}\n".format(re_stat[rank[i]], format(float(rank[i])/float(rank[0]) * 100, '.2f'))
         # create output.txt
-        with open('output.txt', 'w') as f:
+        with open('output.txt', 'w', encoding='utf-8') as f:
             f.write(output)
