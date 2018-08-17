@@ -1,5 +1,6 @@
 from expanddouban import getHtml
 from bs4 import BeautifulSoup
+import codecs
 import csv
 
 
@@ -67,7 +68,7 @@ if __name__ == "__main__":
             else:
                 movie_dict[item_category].extend(getMovies(item_category, item_location))
     # create movies.csv
-    with open('movies.csv', 'w', newline='', encoding='utf-8') as f:
+    with codecs.open('movies.csv', 'w', encoding='utf_8_sig') as f:
         writer = csv.writer(f, delimiter='&')
         for key in movie_dict:
             for movie in movie_dict[key]:
@@ -75,7 +76,7 @@ if __name__ == "__main__":
     # debug
     '''
     movie_dict = {}
-    with open('movies.csv', 'r', encoding='utf-8') as csvfile:
+    with codecs.open('movies.csv', 'r', encoding='utf_8_sig') as csvfile:
         for line in csvfile:
             info = line.strip('\n').split('&')
             m = Movie(info)
@@ -103,14 +104,14 @@ if __name__ == "__main__":
         #
         re_stat = {value:key for key, value in statistics.items()}
         rank = sorted(statistics.values(), reverse=True)
-        output = output + "\n\n类别: {}\n电影数量排名前列地区: \n".format(category)
+        output = output + "\r\n\r\n类别: {}\r\n电影数量排名前列地区: \r\n".format(category)
         for i in range(len(rank)):
             if 0 == i:
                 continue
             if i > 3:
                 break
             output = output + \
-                     "  {} {}\n".format(re_stat[rank[i]], format(float(rank[i])/float(rank[0]) * 100, '.2f'))
+                     "  {} {}\r\n".format(re_stat[rank[i]], format(float(rank[i])/float(rank[0]) * 100, '.2f'))
         # create output.txt
-        with open('output.txt', 'w', encoding='utf-8') as f:
+        with codecs.open('output.txt', 'w', encoding='utf_8_sig') as f:
             f.write(output)
